@@ -1,0 +1,32 @@
+import socket
+import threading
+
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+ip = "172.31.19.93"
+port = 32768
+
+s.bind((ip, port))
+
+recvIP = "172.31.29.206"
+recvPort = 32769
+
+def receiveMessages():
+    while(True):
+        data = s.recvfrom(1024)
+        data = data[0].decode()
+        print(f'\nReceived message: {data}')
+
+
+def sendMessages():
+    while(True):
+        message = input("Enter the message: ")
+        s.sendto(message.encode(), (recvIP, recvPort))
+
+
+send = threading.Thread(target=sendMessages)
+receive = threading.Thread(target=receiveMessages)
+
+
+receive.start()
+send.start()
